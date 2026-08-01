@@ -54,3 +54,6 @@ The report will be generated in the `Reports/` folder as `report.html`.
 ## Notes
 - The project uses environment variables and collection variables inside the Postman collection.
 - Make sure the API base URL and required secrets are available in the collection configuration before execution.
+
+  <img width="1570" height="1546" alt="image" src="https://github.com/user-attachments/assets/8c6306f4-a1db-4fdc-a841-3664cfe9a15d" />
+
