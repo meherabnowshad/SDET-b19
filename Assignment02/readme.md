@@ -61,3 +61,6 @@ The report will be generated in the `Reports/` folder as `report.html`.
 
   <img width="1570" height="1546" alt="image" src="https://github.com/user-attachments/assets/8c6306f4-a1db-4fdc-a841-3664cfe9a15d" />
 
+## Author
+- Meherab Hossain Nowshad
+- meherabhossainnowshad@gmail.com
