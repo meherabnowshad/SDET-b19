@@ -25,7 +25,8 @@ Before running the project, make sure you have installed:
 
 ## Clone the Project
 ```bash
-git clone <repository-url>
+git clone git clone https://github.com/meherabnowshad/SDET-b19.git
+
 cd Assignment02
 ```
 
