@@ -1,0 +1,1441 @@
+{
+  "info": {
+    "_postman_id": "a13cb7d1-98da-4650-b702-150ae7401dfc",
+    "name": "dmoney-b19-Assignment02",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "_exporter_id": "35982737"
+  },
+  "item": [
+    {
+      "name": "Customer",
+      "item": [
+        {
+          "name": "Admin Login",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "const res = pm.response.json();",
+                  "pm.collectionVariables.set(\"access_token\", res.token);",
+                  "",
+                  "pm.test(\"Login has been successful\", function () {",
+                  "    pm.expect(res.message).to.eql(\"Login successful\");",
+                  "});"
+                ],
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {}
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"admin@dmoney.com\",\n  \"password\": \"1234\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{baseUrl}}user/login",
+              "host": [
+                "{{baseUrl}}user"
+              ],
+              "path": [
+                "login"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Create Customer01",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "const res = pm.response.json();",
+                  "",
+                  "pm.test(\"Customer 01 created\", function () {",
+                  "    pm.expect(res.message).to.match(/User created|User already exists/);",
+                  "});"
+                ],
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {}
+              }
+            }
+          ],
+          "request": {
+            "auth": {
+              "type": "inherit"
+            },
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "bearer {{access_token}}",
+                "type": "text"
+              },
+              {
+                "key": "X-AUTH-SECRET-KEY",
+                "value": "{{partnerKey}}",
+                "type": "text"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"Meherab Nowshad\",\n  \"email\": \"meherabhossainnowshad+b19+customer01@gmail.com\",\n  \"password\": \"1234\",\n  \"phone_number\": \"01953925303\",\n  \"nid\": \"9876543210\",\n  \"role\": \"Customer\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{baseUrl}}user/create",
+              "host": [
+                "{{baseUrl}}user"
+              ],
+              "path": [
+                "create"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Create Customer02",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "const res = pm.response.json();",
+                  "",
+                  "pm.test(\"Customer 2 created\", function () {",
+                  "    pm.expect(res.message).to.match(/User created|User already exists/);",
+                  "});"
+                ],
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {}
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "bearer {{access_token}}",
+                "type": "text"
+              },
+              {
+                "key": "X-AUTH-SECRET-KEY",
+                "value": "{{partnerKey}}",
+                "type": "text"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"Meherab Nowshad\",\n  \"email\": \"meherabhossainnowshad+b19+customer02@gmail.com\",\n  \"password\": \"1234\",\n  \"phone_number\": \"01953925303\",\n  \"nid\": \"9876543210\",\n  \"role\": \"Customer\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{baseUrl}}user/create?Authori",
+              "host": [
+                "{{baseUrl}}user"
+              ],
+              "path": [
+                "create"
+              ],
+              "query": [
+                {
+                  "key": "Authori",
+                  "value": null
+                }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Search by User Id",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test(\"User has been found\", function () {",
+                  "    const res = pm.response.json();",
+                  "    pm.expect(res.message).to.include(\"User found\");",
+                  "});",
+                  "",
+                  "pm.test(\"User is activated\", function () {",
+                  "    const res = pm.response.json();",
+                  "    pm.expect(res.user.status).to.include(\"active\");",
+                  "});"
+                ],
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {}
+              }
+            }
+          ],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          },
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "bearer {{access_token}}",
+                "type": "text"
+              },
+              {
+                "key": "X-AUTH-SECRET-KEY",
+                "value": "ROADTOSDET",
+                "type": "text"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{baseUrl}}user/search/id/41",
+              "host": [
+                "{{baseUrl}}user"
+              ],
+              "path": [
+                "search",
+                "id",
+                "41"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Update User",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test(\"User updated successfully\", function () {",
+                  "    const res = pm.response.json();",
+                  "    pm.expect(res.message).to.include(\"User updated successfully\");",
+                  "});"
+                ],
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {}
+              }
+            }
+          ],
+          "request": {
+            "method": "PATCH",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "bearer {{access_token}}",
+                "type": "text"
+              },
+              {
+                "key": "X-AUTH-SECRET-KEY",
+                "value": "{{partnerKey}}",
+                "type": "text"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"status\": \"active\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{baseUrl}}user/update/42",
+              "host": [
+                "{{baseUrl}}user"
+              ],
+              "path": [
+                "update",
+                "42"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Customer01 login",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "const res = pm.response.json();",
+                  "pm.collectionVariables.set(\"cusomer01\", res.token);"
+                ],
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {}
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"meherabhossainnowshad+b19+customer01@gmail.com\",\n  \"password\": \"1234\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{baseUrl}}user/login?env=dev",
+              "host": [
+                "{{baseUrl}}user"
+              ],
+              "path": [
+                "login"
+              ],
+              "query": [
+                {
+                  "key": "env",
+                  "value": "dev"
+                }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Verify OTP",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "const res = pm.response.json();",
+                  "pm.collectionVariables.set(\"cusomer01_token\", res.token);",
+                  "",
+                  "",
+                  "pm.test(\"Customer01 Login successful\", function () {",
+                  "    const res = pm.response.json();",
+                  "    pm.expect(res.message).to.include(\"Login successful\");",
+                  "});"
+                ],
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {}
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"identifier\": \"meherabhossainnowshad+b19+customer01@gmail.com\",\n  \"otp\": \"0000\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{baseUrl}}user/verify-otp?env=dev",
+              "host": [
+                "{{baseUrl}}user"
+              ],
+              "path": [
+                "verify-otp"
+              ],
+              "query": [
+                {
+                  "key": "env",
+                  "value": "dev"
+                }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Customer02 login",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "const res = pm.response.json();",
+                  "pm.collectionVariables.set(\"cusomer01\", res.token);"
+                ],
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {}
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"meherabhossainnowshad+b19+customer02@gmail.com\",\n  \"password\": \"1234\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{baseUrl}}user/login?env=dev",
+              "host": [
+                "{{baseUrl}}user"
+              ],
+              "path": [
+                "login"
+              ],
+              "query": [
+                {
+                  "key": "env",
+                  "value": "dev"
+                }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Verify OTP",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "const res = pm.response.json();",
+                  "pm.collectionVariables.set(\"cusomer02_token\", res.token);",
+                  "",
+                  "",
+                  "pm.test(\"Customer02 Login successful\", function () {",
+                  "    const res = pm.response.json();",
+                  "    pm.expect(res.message).to.include(\"Login successful\");",
+                  "});"
+                ],
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {}
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"identifier\": \"meherabhossainnowshad+b19+customer02@gmail.com\",\n  \"otp\": \"0000\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{baseUrl}}user/verify-otp?env=dev",
+              "host": [
+                "{{baseUrl}}user"
+              ],
+              "path": [
+                "verify-otp"
+              ],
+              "query": [
+                {
+                  "key": "env",
+                  "value": "dev"
+                }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Customer Send Money",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "const res = pm.response.json();",
+                  "const limitHit = res.message && res.message.includes(\"limit exceeded\");",
+                  "",
+                  "pm.test(limitHit ? \"Daily Amount Exceed\" : \"Send money successful\", function () {",
+                  "    if (limitHit) {",
+                  "        pm.expect(res.details).to.be.an(\"object\");",
+                  "        pm.expect(res.details.remainingAmount).to.be.a(\"number\");",
+                  "    } else {",
+                  "        pm.expect(res.message).to.include(\"Send money successful\");",
+                  "    }",
+                  "});",
+                  "",
+                  "pm.test(limitHit",
+                  "    ? `Daily Amount Exceed - remaining ${res.details.remainingAmount} Tk`",
+                  "    : `Service fee is ${res.fee}`, function () {",
+                  "    if (limitHit) {",
+                  "        pm.expect(res.details.usedAmount).to.be.at.most(res.details.maxAmount);",
+                  "    } else {",
+                  "        pm.expect(res.fee).to.be.a(\"number\");",
+                  "    }",
+                  "});"
+                ],
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {}
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "bearer {{cusomer02_token}}",
+                "type": "text"
+              },
+              {
+                "key": "X-AUTH-SECRET-KEY",
+                "value": "{{partnerKey}}",
+                "type": "text"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"from_account\": \"01953925303\",\n  \"to_account\": \"01953925304\",\n  \"amount\": 2000\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{baseUrl}}transaction/sendmoney",
+              "host": [
+                "{{baseUrl}}transaction"
+              ],
+              "path": [
+                "sendmoney"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Customer Cashout Via Agent",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "const res = pm.response.json();",
+                  "const limitHit = res.message.includes(\"limit exceeded\");",
+                  "",
+                  "pm.test(limitHit ? \"Daily Amount Exceed\" : \"Withdraw successful\", function () {",
+                  "    if (limitHit) {",
+                  "        pm.expect(res.details.remainingAmount).to.be.a(\"number\");",
+                  "    } else {",
+                  "        pm.expect(res.message).to.include(\"Withdraw successful\");",
+                  "    }",
+                  "});",
+                  "",
+                  "pm.test(`Service fee is ${limitHit ? \"N/A (limit exceeded)\" : res.fee}`, function () {",
+                  "    if (limitHit) {",
+                  "        pm.expect(res).to.not.have.property(\"fee\");",
+                  "    } else {",
+                  "        pm.expect(res.fee).to.be.a(\"number\");",
+                  "    }",
+                  "});",
+                  "",
+                  "pm.test(`Current Balance is ${limitHit ? \"N/A (limit exceeded)\" : res.currentBalance}`, function () {",
+                  "    if (limitHit) {",
+                  "        pm.expect(res).to.not.have.property(\"currentBalance\");",
+                  "    } else {",
+                  "        pm.expect(res.currentBalance).to.be.a(\"number\");",
+                  "    }",
+                  "});"
+                ],
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {}
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "berarer {{cusomer02_token}}",
+                "type": "text"
+              },
+              {
+                "key": "X-AUTH-SECRET-KEY",
+                "value": "{{partnerKey}}",
+                "type": "text"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"from_account\": \"01953925303\",\n  \"to_account\": \"01953925302\",\n  \"amount\": 500\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{baseUrl}}transaction/withdraw",
+              "host": [
+                "{{baseUrl}}transaction"
+              ],
+              "path": [
+                "withdraw"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Merchant Pay",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "const res = pm.response.json();",
+                  "const limitHit = res.message && res.message.includes(\"limit exceeded\");",
+                  "",
+                  "pm.test(limitHit ? \"Daily Amount Exceed\" : \"Payment successful\", function () {",
+                  "    if (limitHit) {",
+                  "        pm.expect(res.details).to.be.an(\"object\");",
+                  "        pm.expect(res.details.period).to.be.a(\"string\");",
+                  "    } else {",
+                  "        pm.expect(res.message).to.include(\"Payment successful\");",
+                  "    }",
+                  "});",
+                  "",
+                  "pm.test(limitHit",
+                  "    ? `Daily Amount Exceed - remaining ${res.details.remainingAmount} Tk`",
+                  "    : `Service fee is ${res.fee}`, function () {",
+                  "    if (limitHit) {",
+                  "        pm.expect(res.details.remainingAmount).to.be.a(\"number\");",
+                  "    } else {",
+                  "        pm.expect(res.fee).to.be.a(\"number\");",
+                  "    }",
+                  "});",
+                  "",
+                  "pm.test(limitHit",
+                  "    ? `Daily Amount Exceed - used ${res.details.usedAmount} of ${res.details.maxAmount} Tk`",
+                  "    : `Current Balance is ${res.currentBalance}`, function () {",
+                  "    if (limitHit) {",
+                  "        pm.expect(res.details.usedAmount).to.be.at.most(res.details.maxAmount);",
+                  "    } else {",
+                  "        pm.expect(res.currentBalance).to.be.a(\"number\");",
+                  "    }",
+                  "});"
+                ],
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {}
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "bearer {{cusomer01_token}}",
+                "type": "text"
+              },
+              {
+                "key": "X-AUTH-SECRET-KEY",
+                "value": "{{partnerKey}}",
+                "type": "text"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"from_account\": \"01953925304\",\n  \"to_account\": \"01953925301\",\n  \"amount\": 400\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{baseUrl}}transaction/payment",
+              "host": [
+                "{{baseUrl}}transaction"
+              ],
+              "path": [
+                "payment"
+              ]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "Agent",
+      "item": [
+        {
+          "name": "Create Agent",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "const res = pm.response.json();",
+                  "",
+                  "pm.test(\"Agent created\", function () {",
+                  "    pm.expect(res.message).to.match(/User created|User already exists/);",
+                  "});"
+                ],
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {}
+              }
+            }
+          ],
+          "request": {
+            "auth": {
+              "type": "inherit"
+            },
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "bearer {{access_token}}",
+                "type": "text"
+              },
+              {
+                "key": "X-AUTH-SECRET-KEY",
+                "value": "{{partnerKey}}",
+                "type": "text"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"Meherab Nowshad\",\n  \"email\": \"meherabhossainnowshad+b19+customer03@gmail.com\",\n  \"password\": \"1234\",\n  \"phone_number\": \"01953925302\",\n  \"nid\": \"9876543210\",\n  \"role\": \"Agent\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{baseUrl}}user/create",
+              "host": [
+                "{{baseUrl}}user"
+              ],
+              "path": [
+                "create"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Update Agent",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test(\"Agent updated successfully\", function () {",
+                  "    const res = pm.response.json();",
+                  "    pm.expect(res.message).to.include(\"User updated successfully\");",
+                  "});"
+                ],
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {}
+              }
+            }
+          ],
+          "request": {
+            "method": "PATCH",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "bearer {{access_token}}",
+                "type": "text"
+              },
+              {
+                "key": "X-AUTH-SECRET-KEY",
+                "value": "{{partnerKey}}",
+                "type": "text"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"status\": \"active\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{baseUrl}}user/update/43",
+              "host": [
+                "{{baseUrl}}user"
+              ],
+              "path": [
+                "update",
+                "43"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Search User by email",
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          },
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "bearer {{access_token}}",
+                "type": "text"
+              },
+              {
+                "key": "X-AUTH-SECRET-KEY",
+                "value": "{{partnerKey}}",
+                "type": "text"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{baseUrl}}user/search/email/system@dmoney.com",
+              "host": [
+                "{{baseUrl}}user"
+              ],
+              "path": [
+                "search",
+                "email",
+                "system@dmoney.com"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Agent login",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "const res = pm.response.json();",
+                  "pm.collectionVariables.set(\"cusomer01\", res.token);"
+                ],
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {}
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"meherabhossainnowshad+b19+customer03@gmail.com\",\n  \"password\": \"1234\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{baseUrl}}user/login?env=dev",
+              "host": [
+                "{{baseUrl}}user"
+              ],
+              "path": [
+                "login"
+              ],
+              "query": [
+                {
+                  "key": "env",
+                  "value": "dev"
+                }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Verify OTP",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "const res = pm.response.json();",
+                  "pm.collectionVariables.set(\"agent_token\", res.token);",
+                  "",
+                  "",
+                  "pm.test(\"Agent Login successful\", function () {",
+                  "    const res = pm.response.json();",
+                  "    pm.expect(res.message).to.include(\"Login successful\");",
+                  "});"
+                ],
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {}
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"identifier\": \"meherabhossainnowshad+b19+customer03@gmail.com\",\n  \"otp\": \"0000\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{baseUrl}}user/verify-otp?env=dev",
+              "host": [
+                "{{baseUrl}}user"
+              ],
+              "path": [
+                "verify-otp"
+              ],
+              "query": [
+                {
+                  "key": "env",
+                  "value": "dev"
+                }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Customer Deposit",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "const res = pm.response.json();",
+                  "const limitHit = /limit exceeded/i.test(res.message || \"\");",
+                  "",
+                  "// pull the number out of \"...maximum of 515.00 tk...\" for the labels",
+                  "const maxAllowed = limitHit ? (res.message.match(/[\\d,]+\\.?\\d*/) || [\"N/A\"])[0] : null;",
+                  "",
+                  "pm.test(limitHit ? \"Deposit Limit Exceed\" : \"Deposit successful\", function () {",
+                  "    if (limitHit) {",
+                  "        pm.expect(res.message).to.be.a(\"string\");",
+                  "    } else {",
+                  "        pm.expect(res.message).to.include(\"Deposit successful\");",
+                  "    }",
+                  "});",
+                  "",
+                  "pm.test(limitHit",
+                  "    ? `Deposit Limit Exceed - max allowed ${maxAllowed} Tk`",
+                  "    : `Commission is ${res.commission}`, function () {",
+                  "    if (limitHit) {",
+                  "        pm.expect(res.message).to.match(/limit exceeded/i);",
+                  "    } else {",
+                  "        pm.expect(res.commission).to.be.a(\"number\");",
+                  "    }",
+                  "});",
+                  "",
+                  "pm.test(limitHit",
+                  "    ? \"Deposit Limit Exceed - no transaction created\"",
+                  "    : `Current Balance is ${res.currentBalance}`, function () {",
+                  "    if (limitHit) {",
+                  "        pm.expect(res).to.not.have.property(\"trnxId\");",
+                  "    } else {",
+                  "        pm.expect(res.currentBalance).to.be.a(\"number\");",
+                  "    }",
+                  "});"
+                ],
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {}
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "bearer {{agent_token}}",
+                "type": "text"
+              },
+              {
+                "key": "X-AUTH-SECRET-KEY",
+                "value": "{{partnerKey}}",
+                "type": "text"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"from_account\": \"01953925302\",\n  \"to_account\": \"01953925303\",\n  \"amount\": 2000\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{baseUrl}}transaction/deposit",
+              "host": [
+                "{{baseUrl}}transaction"
+              ],
+              "path": [
+                "deposit"
+              ]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "Merchant",
+      "item": [
+        {
+          "name": "Create Merchant",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "const res = pm.response.json();",
+                  "",
+                  "pm.test(\"Merchant created\", function () {",
+                  "    pm.expect(res.message).to.match(/User created|User already exists/);",
+                  "});"
+                ],
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {}
+              }
+            }
+          ],
+          "request": {
+            "auth": {
+              "type": "inherit"
+            },
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "bearer {{access_token}}",
+                "type": "text"
+              },
+              {
+                "key": "X-AUTH-SECRET-KEY",
+                "value": "{{partnerKey}}",
+                "type": "text"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"Meherab Nowshad\",\n  \"email\": \"meherabhossainnowshad+b19+merchant@gmail.com\",\n  \"password\": \"1234\",\n  \"phone_number\": \"01953925301\",\n  \"nid\": \"9876543210\",\n  \"role\": \"Merchant\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{baseUrl}}user/create",
+              "host": [
+                "{{baseUrl}}user"
+              ],
+              "path": [
+                "create"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Update Merchant",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test(\"Merchant updated successfully\", function () {",
+                  "    const res = pm.response.json();",
+                  "    pm.expect(res.message).to.include(\"User updated successfully\");",
+                  "});"
+                ],
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {}
+              }
+            }
+          ],
+          "request": {
+            "method": "PATCH",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "bearer {{access_token}}",
+                "type": "text"
+              },
+              {
+                "key": "X-AUTH-SECRET-KEY",
+                "value": "{{partnerKey}}",
+                "type": "text"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"status\": \"active\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{baseUrl}}user/update/44",
+              "host": [
+                "{{baseUrl}}user"
+              ],
+              "path": [
+                "update",
+                "44"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Mechant login",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  ""
+                ],
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {}
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"meherabhossainnowshad+b19+merchant@gmail.com\",\n  \"password\": \"1234\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{baseUrl}}user/login?env=dev",
+              "host": [
+                "{{baseUrl}}user"
+              ],
+              "path": [
+                "login"
+              ],
+              "query": [
+                {
+                  "key": "env",
+                  "value": "dev"
+                }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Verify OTP",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "const res = pm.response.json();",
+                  "pm.collectionVariables.set(\"merchant_token\", res.token);",
+                  "",
+                  "",
+                  "pm.test(\"Merchant Login successful\", function () {",
+                  "    const res = pm.response.json();",
+                  "    pm.expect(res.message).to.include(\"Login successful\");",
+                  "});"
+                ],
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {}
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"identifier\": \"meherabhossainnowshad+b19+merchant@gmail.com\",\n  \"otp\": \"0000\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{baseUrl}}user/verify-otp?env=dev",
+              "host": [
+                "{{baseUrl}}user"
+              ],
+              "path": [
+                "verify-otp"
+              ],
+              "query": [
+                {
+                  "key": "env",
+                  "value": "dev"
+                }
+              ]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "System",
+      "item": [
+        {
+          "name": "System Login",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "const res = pm.response.json();",
+                  "pm.collectionVariables.set(\"System_token\", res.token);",
+                  "",
+                  "",
+                  "pm.test(\"System Login successful\", function () {",
+                  "    const res = pm.response.json();",
+                  "    pm.expect(res.message).to.include(\"Login successful\");",
+                  "});"
+                ],
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {}
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"system@dmoney.com\",\n  \"password\": \"1234\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{baseUrl}}user/login?env=dev",
+              "host": [
+                "{{baseUrl}}user"
+              ],
+              "path": [
+                "login"
+              ],
+              "query": [
+                {
+                  "key": "env",
+                  "value": "dev"
+                }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Agent Deposit",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test(\"SYSTEM deposit to Agent successful\", function () {",
+                  "    const res = pm.response.json();",
+                  "    pm.expect(res.message).to.include(\"SYSTEM deposit to Agent successful\");",
+                  "});"
+                ],
+                "type": "text/javascript",
+                "packages": {},
+                "requests": {}
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "bearer {{System_token}}",
+                "type": "text"
+              },
+              {
+                "key": "X-AUTH-SECRET-KEY",
+                "value": "{{partnerKey}}",
+                "type": "text"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"from_account\": \"SYSTEM\",\n  \"to_account\": \"01953925302\",\n  \"amount\": 5000\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{baseUrl}}transaction/deposit",
+              "host": [
+                "{{baseUrl}}transaction"
+              ],
+              "path": [
+                "deposit"
+              ]
+            }
+          },
+          "response": []
+        }
+      ]
+    }
+  ],
+  "event": [
+    {
+      "listen": "prerequest",
+      "script": {
+        "type": "text/javascript",
+        "packages": {},
+        "requests": {},
+        "exec": [
+          ""
+        ]
+      }
+    },
+    {
+      "listen": "test",
+      "script": {
+        "type": "text/javascript",
+        "packages": {},
+        "requests": {},
+        "exec": [
+          ""
+        ]
+      }
+    }
+  ],
+  "variable": [
+    {
+      "key": "baseUrl",
+      "value": "http://localhost:4000/"
+    },
+    {
+      "key": "access_token",
+      "value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZGVudGlmaWVyIjoiYWRtaW5AZG1vbmV5LmNvbSIsInJvbGUiOiJBZG1pbiIsImlhdCI6MTc4NTU5MDU3MCwiZXhwIjoxNzg1NTk0MTcwfQ.KsleOm-kJ4mqqA7SYjeGvZtEz_RHL1Q1hxtRGSfDyZc"
+    },
+    {
+      "key": "partnerKey",
+      "value": "ROADTOSDET"
+    },
+    {
+      "key": "cusomer01_token",
+      "value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZGVudGlmaWVyIjoibWVoZXJhYmhvc3NhaW5ub3dzaGFkK2IxOStjdXN0b21lcjAxQGdtYWlsLmNvbSIsInJvbGUiOiJDdXN0b21lciIsImlhdCI6MTc4NTU5MDcwMSwiZXhwIjoxNzg1NTk0MzAxfQ.m5VnVVS1O_a3_MhPKxkMLpxf4RYAPP1f7dArd5MfYLc"
+    },
+    {
+      "key": "cusomer02_token",
+      "value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZGVudGlmaWVyIjoibWVoZXJhYmhvc3NhaW5ub3dzaGFkK2IxOStjdXN0b21lcjAyQGdtYWlsLmNvbSIsInJvbGUiOiJDdXN0b21lciIsImlhdCI6MTc4NTU5MDcwNywiZXhwIjoxNzg1NTk0MzA3fQ.VasN8Ee55GzR8oGYmIYuIGZFR-iKoiKk0kLaLcGSRpo"
+    },
+    {
+      "key": "merchant_token",
+      "value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZGVudGlmaWVyIjoibWVoZXJhYmhvc3NhaW5ub3dzaGFkK2IxOSttZXJjaGFudEBnbWFpbC5jb20iLCJyb2xlIjoiTWVyY2hhbnQiLCJpYXQiOjE3ODU1Nzg2MDUsImV4cCI6MTc4NTU4MjIwNX0.qoOT2ulffr0tnyYStwiVZhzgo0ZTGhjic1iCJR9LT_I"
+    },
+    {
+      "key": "System_token",
+      "value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZGVudGlmaWVyIjoic3lzdGVtQGRtb25leS5jb20iLCJyb2xlIjoiQWdlbnQiLCJpYXQiOjE3ODU1Nzk3MzYsImV4cCI6MTc4NTU4MzMzNn0.URmTvE4YEjhWNJHVSrCggYY34dDbcbpV5iSW7_dS3hQ"
+    },
+    {
+      "key": "cusomer01",
+      "value": null
+    },
+    {
+      "key": "agent_token",
+      "value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZGVudGlmaWVyIjoibWVoZXJhYmhvc3NhaW5ub3dzaGFkK2IxOStjdXN0b21lcjAzQGdtYWlsLmNvbSIsInJvbGUiOiJBZ2VudCIsImlhdCI6MTc4NTU5MDc5OSwiZXhwIjoxNzg1NTk0Mzk5fQ.4klhQ5udl56lvLJNxcBUd8DnM6YloDjvIP38KD0dhtE"
+    },
+    {
+      "key": "messageId",
+      "value": "19fbd4a61c14c407"
+    }
+  ]
+}
