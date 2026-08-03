@@ -1,0 +1,52 @@
+Test Case ID,Module,Test Case Title,Test Steps,Test Data,Expected Result,Actual Result,Test Result (Pass/Fail),Remarks (Type/Priority/Covers)
+SCI-01,Self Cash-in (Stripe),Full cash-in completes and wallet/ledger update correctly (happy path),"1. POST /transaction/stripe/create-intent {amount:500}
+2. Confirm card payment client-side with 4242 4242 4242 4242, any future expiry, any CVC
+3. POST /transaction/stripe/confirm with the paymentIntentId","Customer1: customer1@dmoney.com / 01686606902, balance <= 9500
+Amount: 500","create-intent 200 (clientSecret, amount 500, minAmount 10, maxAmount 10000); confirm 201 (trnxId=paymentIntentId, amount 500, currentBalance=old+500); 2 ledger rows share trnxId (SYSTEM debit 500 / Customer credit 500); Step 3 receipt matches.",,,Type: Functional | Priority: High | Covers: controller.js:171-192 (core flow + ledger correctness)
+SCI-02,Self Cash-in (Stripe),Cash-in succeeds at exact minimum boundary amount (10 tk),"1. create-intent {amount:10}
+2. Complete payment with valid card, confirm","Customer1, balance <= 9990
+Amount: 10",create-intent 200 (not rejected as below-minimum); confirm 201; wallet credited by exactly 10.,,,"Type: Functional | Priority: Medium | Covers: controller.js:62 boundary (amt<minAmount, 10 is inclusive)"
+SCI-03,Self Cash-in (Stripe),"Cash-in succeeds when resulting balance lands exactly at the 10,000 tk wallet cap","1. Set balance to exactly 9950
+2. create-intent {amount:50}
+3. Complete payment, confirm","Customer1, balance=9950
+Amount: 50",create-intent 200 (50 <= remaining 50); confirm 201 with currentBalance=10000.,,,"Type: Functional | Priority: High | Covers: controller.js:80 boundary (amt>remaining, inclusive edge)"
+SCI-04,Self Cash-in (Stripe),3D Secure (SCA) required card completes successfully once authenticated,"1. create-intent {amount:300}
+2. Submit card 4000 0025 0000 3155, approve the 3DS challenge modal
+3. confirm with resulting paymentIntentId","Customer1, balance <= 9700
+Amount: 300
+Card: 4000 0025 0000 3155",confirmCardPayment resolves succeeded after authentication; /confirm returns 201; wallet credited by 300.,,,"Type: Functional | Priority: High | Covers: page.tsx:77-80 SCA path, distinct from plain-card happy path"
+SCI-05,Self Cash-in (Stripe),Amount below minimum is rejected with exact business message,1. create-intent {amount:9.99},"Customer1
+Amount: 9.99",400 { message: 'Minimum cash-in amount is 10 tk' }; no PaymentIntent created.,,,Type: Negative | Priority: Medium | Covers: controller.js:62-64
+SCI-06,Self Cash-in (Stripe),Amount above per-transaction maximum is rejected independent of wallet headroom,"1. Set balance to 0 (proves per-txn cap fires, not wallet cap)
+2. create-intent {amount:10000.01}","Customer1, balance=0
+Amount: 10000.01",400 { message: 'Maximum cash-in amount is 10000 tk' }.,,,Type: Negative | Priority: Medium | Covers: controller.js:65-67 (distinct decision point from wallet-cap branches)
+SCI-07,Self Cash-in (Stripe),Cash-in blocked with 'already at maximum capacity' message when wallet is already at cap,"1. Set balance to 10000
+2. create-intent {amount:50}","Customer1, balance=10000
+Amount: 50",208 { message: 'Limit exceeded. Your wallet is already at maximum capacity.' }; no PaymentIntent created.,,,Type: Negative | Priority: High | Covers: controller.js:73-77 (distinct branch/message from SCI-08)
+SCI-08,Self Cash-in (Stripe),Cash-in blocked with exact remaining-headroom message when amount would push wallet past cap,"1. Set balance to 9950
+2. create-intent {amount:50.01}","Customer1, balance=9950
+Amount: 50.01",208 { message: 'Limit exceeded. You can cash in a maximum of 50.00 tk.' },,,Type: Negative | Priority: High | Covers: controller.js:78-84 (remaining = maxAmount - currentBalance)
+SCI-09,Self Cash-in (Stripe),Non-numeric/zero/negative amount is rejected (equivalence class representative),1. create-intent {amount:'abc'},"Customer1
+Amount: 'abc' (represents NaN/zero/negative/falsy class)",400 { message: 'Amount must be a positive number' },,,"Type: Negative | Priority: Low | Covers: controller.js:52-54 — one representative per test-design skill's equivalence-class rule, not enumerated per input variant"
+SCI-10,Self Cash-in (Stripe),Card declined by Stripe shows inline error and does not credit wallet (equivalence class),"1. Obtain valid create-intent for amount 200
+2. Submit card 4000 0000 0000 0002 (generic decline) on Step 2","Customer1
+Amount: 200
+Card: 4000 0000 0000 0002",Inline decline error shown on Step 2; user remains on Step 2; /transaction/stripe/confirm never called; wallet unchanged.,,,"Type: Negative | Priority: High | Covers: page.tsx:82-86 — represents all Stripe decline reasons (expired/CVC/insufficient-funds/lost/stolen/generic), one code path"
+SCI-11,Self Cash-in (Stripe),Abandoned/failed 3D Secure challenge does not credit the wallet,"1. Obtain valid create-intent for amount 300
+2. Submit card 4000 0025 0000 3155 and dismiss/fail the 3DS challenge","Customer1
+Amount: 300
+Card: 4000 0025 0000 3155 (challenge not completed)",'Payment was not completed. Please try again.' shown on Step 2; wallet not credited; /confirm not called.,,,"Type: Negative | Priority: Medium | Covers: page.tsx:88-93 else-branch, distinct outcome from SCI-04/SCI-10"
+SCI-12,Self Cash-in (Stripe),Customer cannot confirm a PaymentIntent belonging to a different customer (anti-spoofing),"1. Customer1 creates a PaymentIntent for amount 200 and completes the card charge (does not call /confirm)
+2. As Customer2, POST /transaction/stripe/confirm with Customer1's paymentIntentId","Customer1: 01686606902 (creates PI)
+Customer2: customer2@dmoney.com / 01686606903 (attempts confirm)",403 { message: 'Payment intent does not belong to this account' }; Customer2 not credited; Customer1's PI remains unconfirmed via this call.,,,Type: Security | Priority: High | Covers: controller.js:153-157 anti-spoofing metadata check
+SCI-13,Self Cash-in (Stripe),Duplicate confirm call for an already-processed PaymentIntent is rejected (idempotency),"1. Complete a successful cash-in (confirm returns 201)
+2. POST /transaction/stripe/confirm again with the same paymentIntentId","Customer1
+Amount: 200 (reuse trnxId from a completed cash-in)",Second call returns 208 { message: 'This payment has already been processed' }; exactly one ledger pair exists for that trnxId; wallet not double-credited.,,,Type: Security | Priority: High | Covers: controller.js:160-165 idempotency guard
+SCI-14,Self Cash-in (Stripe),Non-Customer role cannot create a Stripe payment intent,1. POST /transaction/stripe/create-intent {amount:100} using Agent's JWT,"Test Agent: agent@dmoney.com / 01686606901, role Agent",403 { message: 'Only customers can use bank cash-in' },,,Type: Security | Priority: High | Covers: controller.js:44-46 role gate
+SCI-15,Self Cash-in (Stripe),Request with no valid auth token is rejected,1. POST /transaction/stripe/create-intent {amount:100} with no Authorization header,Unauthenticated request,401 { message: 'No Token Found!' }; controller logic never executes.,,,Type: Security | Priority: Medium | Covers: jwtMiddleware.js — represents auth-failure equivalence class (missing token/wrong secret/expired JWT all fail closed)
+SCI-16,Self Cash-in (Stripe),Completed Stripe cash-in renders correctly on Customer self-statement page despite NULL transaction_type,"1. Complete a successful cash-in of 250 tk
+2. Navigate to Customer self-statement page and locate the transaction","Customer1
+Amount: 250","Row displays description 'Bank Cash In (Stripe)', credit=250, correct running balance; page does not crash/hide/misfilter the row despite missing transaction_type.",,,Type: Regression | Priority: Medium | Covers: named consumer SelfStatement.tsx — this row type uniquely leaves transaction_type NULL unlike Deposit/Withdraw/SendMoney
+SCI-17,Self Cash-in (Stripe),"Frontend treats a wallet-cap 208 response as a failure, not a success","1. Set balance to 9950
+2. On Step 1 of the UI, enter amount 100 and submit","Customer1, balance=9950
+Amount: 100 (UI flow, not raw API)","UI shows 'Limit exceeded. You can cash in a maximum of 50.00 tk.' as inline error, stays on Step 1; does NOT advance to Step 2.",,,"Type: Regression | Priority: High | Covers: named, code-comment-flagged risk at page.tsx:213-217 (axios doesn't throw on 208)"
