@@ -66,8 +66,7 @@ A console-based blog management application built with **Node.js**, **JavaScript
 
 1. Clone the repository:
    ```bash
-   git clone <repo-url>
-   cd Assignment04
+   git clone https://github.com/meherabnowshad/SDET-b19/tree/master/Assignment04
    ```
 
 2. Install dependencies:
