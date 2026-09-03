@@ -55,11 +55,11 @@ empty states, delete confirmations, responsive layout (sidebar → drawer on mob
 
 ## Technologies
 
-| Layer    | Stack |
-| -------- | ----- |
-| Frontend | Next.js 16 (App Router), React 19, Tailwind CSS v4, axios |
+| Layer    | Stack                                                         |
+| -------- | ------------------------------------------------------------- |
+| Frontend | Next.js 16 (App Router), React 19, Tailwind CSS v4, axios     |
 | Backend  | Node.js, Express 5, Sequelize 6, MySQL 8, JWT, bcrypt, multer |
-| Docs/QA  | Postman collection (`backend/postman/`), Newman-runnable |
+| Docs/QA  | Postman collection (`backend/postman/`), Newman-runnable    |
 
 ## Installation
 
@@ -130,51 +130,48 @@ The frontend **requires** the backend: all data comes from `NEXT_PUBLIC_API_URL`
 Without it you get a friendly “Cannot reach the server” message instead of raw errors.
 New endpoints added for this assignment (see `backend/README-backend.md` § Additions):
 
-| Method | Endpoint | Purpose |
-| ------ | -------- | ------- |
-| `POST` | `/api/auth/register/send-otp` | Email a 6-digit registration code (`{ firstname, lastname, email, password }`) |
-| `POST` | `/api/auth/register` | Verify code + create account (`{ ..., otp }`) |
-| `POST` | `/api/auth/forgot-password` | Request reset link (`{ email }`) |
-| `PATCH` | `/api/auth/reset-password/:token` | Set new password (`{ password }`) |
-| `PATCH` | `/api/users/profile/image` | Avatar upload (`multipart/form-data`, field `image`, ≤ 2 MB) |
+| Method    | Endpoint                            | Purpose                                                                          |
+| --------- | ----------------------------------- | -------------------------------------------------------------------------------- |
+| `POST`  | `/api/auth/register/send-otp`     | Email a 6-digit registration code (`{ firstname, lastname, email, password }`) |
+| `POST`  | `/api/auth/register`              | Verify code + create account (`{ ..., otp }`)                                  |
+| `POST`  | `/api/auth/forgot-password`       | Request reset link (`{ email }`)                                               |
+| `PATCH` | `/api/auth/reset-password/:token` | Set new password (`{ password }`)                                              |
+| `PATCH` | `/api/users/profile/image`        | Avatar upload (`multipart/form-data`, field `image`, ≤ 2 MB)                |
 
 Plus: `users.profileImage` column, static `/uploads` serving, and
 `author.profileImage` included in blog responses.
 
 ## Application routes
 
-| Page | Access |
-| ---- | ------ |
-| `/` | Public — browse/search/filter |
-| `/blogs/[id]` | Public — details / Blog Not Found |
-| `/login`, `/register` | Public |
-| `/forgot-password`, `/reset-password/[token]` | Public |
-| `/dashboard` | User/Admin |
-| `/dashboard/blogs` | User/Admin (mine / all) |
-| `/dashboard/blogs/create` | User/Admin |
-| `/dashboard/blogs/[id]/edit` | User/Admin (own / any) |
-| `/dashboard/profile` | User/Admin |
-| `/dashboard/change-password` | User/Admin |
-| `/admin/users`, `/admin/users/[id]` | Admin only (else Access Denied) |
+| Page                                              | Access                             |
+| ------------------------------------------------- | ---------------------------------- |
+| `/`                                             | Public — browse/search/filter     |
+| `/blogs/[id]`                                   | Public — details / Blog Not Found |
+| `/login`, `/register`                         | Public                             |
+| `/forgot-password`, `/reset-password/[token]` | Public                             |
+| `/dashboard`                                    | User/Admin                         |
+| `/dashboard/blogs`                              | User/Admin (mine / all)            |
+| `/dashboard/blogs/create`                       | User/Admin                         |
+| `/dashboard/blogs/[id]/edit`                    | User/Admin (own / any)             |
+| `/dashboard/profile`                            | User/Admin                         |
+| `/dashboard/change-password`                    | User/Admin                         |
+| `/admin/users`, `/admin/users/[id]`           | Admin only (else Access Denied)    |
 
 ## User / Admin functionality
 
-| Flow | Steps |
-| ---- | ----- |
-| Reader journey | Browse → search `playwright` → filter `Testing` → open blog |
-| Member journey | Register (form → email OTP → verify) → login → dashboard → upload avatar → create → edit → delete → update profile → change password → logout |
-| Recovery journey | Login → Forgot Password → email → reset link → new password → login |
-| Admin journey | Login → dashboard → Users → view user → deactivate → manage all blogs |
+| Flow             | Steps                                                                                                                                                    |
+| ---------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Reader journey   | Browse → search`playwright` → filter `Testing` → open blog                                                                                        |
+| Member journey   | Register (form → email OTP → verify) → login → dashboard → upload avatar → create → edit → delete → update profile → change password → logout |
+| Recovery journey | Login → Forgot Password → email → reset link → new password → login                                                                                 |
+| Admin journey    | Login → dashboard → Users → view user → deactivate → manage all blogs                                                                               |
 
 ## Screenshots
 
-> TODO: add screenshots of these pages under `docs/` (or attach to the release):
-> homepage, blog details, login, register, dashboard, manage blogs, create/edit blog,
-> profile with avatar, change password, admin users, user detail, mobile drawer.
+![1788464155085](image/README/1788464155085.png)
 
-## Submission checklist
+![1788464210445](image/README/1788464210445.png)
 
-- [x] No hardcoded blogs/users; no mock APIs; no direct DB access from frontend
-- [x] `userId` never sent on blog create (backend takes it from the token)
-- [x] No frontend role controls; 401/403 from backend respected
-- [x] `.env.example` files present; real secrets git-ignored
+![1788464253750](image/README/1788464253750.png)
+
+![1788464282216](image/README/1788464282216.png)

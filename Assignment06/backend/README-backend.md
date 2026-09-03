@@ -1,6 +1,7 @@
 # Assignment 05 — Blog Management REST API
 
 > **Assignment 06 additions** (for the Next.js frontend in `../frontend/`):
+>
 > - Default port is now **5001** (macOS occupies 5000 with AirPlay).
 > - New: `POST /api/auth/forgot-password` (`{ email }`) → returns a generic
 >   success message plus, for development (no mailer), `data: { resetUrl, token }`.
@@ -17,7 +18,7 @@
 >   `http://localhost:3000`, used to build the reset link). New dep: `multer`.
 > - Registration is OTP-gated: `POST /api/auth/register/send-otp`
 >   (`{ firstname, lastname, email, password }`, 409 if taken) emails a 6-digit
->   code (Gmail SMTP via `GMAIL` + `GMAIL_APP_PASSWORD`, 10-min expiry);
+>   code (Gmail SMTP via `GMAIL` + `GMAIL_APP_PASSWORD`, 2-min expiry);
 >   `POST /api/auth/register` now requires `{ ..., otp }` (bcrypt-hashed in the
 >   `otps` table, 5 wrong attempts burns the code). Without Gmail configured the
 >   API runs in dev mode: the OTP is logged and returned as `data.devOtp`.
@@ -25,24 +26,24 @@
 
 A REST API for a blog application with three access levels — **Admin**, **User** and **Guest** — covering authentication, user management, blog CRUD, role-based authorization, validation and public blog search.
 
-**Batch:** 19 &nbsp;·&nbsp; **Topic:** API Development &nbsp;·&nbsp; **Repository:** <https://github.com/meherabnowshad/SDET-b19>
+**Batch:** 19 &nbsp;·&nbsp; **Topic:** API Development &nbsp;·&nbsp; **Repository:** [https://github.com/meherabnowshad/SDET-b19](https://github.com/meherabnowshad/SDET-b19)
 
-📖 **Postman documentation:** _<!-- paste your published Postman docs link here -->_
+📖 **Postman documentation:** 
 
 ---
 
 ## Tech stack
 
-| Concern | Choice |
-| --- | --- |
-| Runtime | Node.js (ES modules) |
-| Framework | Express 5 |
-| Database | MySQL 8 |
-| ORM | Sequelize 6 |
-| Auth | JSON Web Token (`jsonwebtoken`) |
+| Concern          | Choice                                |
+| ---------------- | ------------------------------------- |
+| Runtime          | Node.js (ES modules)                  |
+| Framework        | Express 5                             |
+| Database         | MySQL 8                               |
+| ORM              | Sequelize 6                           |
+| Auth             | JSON Web Token (`jsonwebtoken`)     |
 | Password hashing | bcrypt (`bcryptjs`, 10 salt rounds) |
-| Validation | `express-validator` |
-| Misc | `cors`, `morgan`, `dotenv` |
+| Validation       | `express-validator`                 |
+| Misc             | `cors`, `morgan`, `dotenv`      |
 
 ---
 
@@ -191,29 +192,29 @@ Database name: **`blogdb`**
 
 ### `users`
 
-| Column | Type | Notes |
-| --- | --- | --- |
-| `id` | INT | Primary key, auto increment |
-| `firstname` | VARCHAR(255) | Required |
-| `lastname` | VARCHAR(255) | Required |
-| `email` | VARCHAR(255) | Required, **unique** |
-| `password` | VARCHAR(255) | bcrypt hash — never a plain-text value |
-| `isActive` | BOOLEAN | Default `true` |
-| `role` | ENUM(`admin`,`user`) | Default `user` |
-| `createAt` | DATETIME | Set automatically |
-| `updateAt` | DATETIME | Set automatically |
+| Column        | Type                     | Notes                                   |
+| ------------- | ------------------------ | --------------------------------------- |
+| `id`        | INT                      | Primary key, auto increment             |
+| `firstname` | VARCHAR(255)             | Required                                |
+| `lastname`  | VARCHAR(255)             | Required                                |
+| `email`     | VARCHAR(255)             | Required,**unique**               |
+| `password`  | VARCHAR(255)             | bcrypt hash — never a plain-text value |
+| `isActive`  | BOOLEAN                  | Default`true`                         |
+| `role`      | ENUM(`admin`,`user`) | Default`user`                         |
+| `createAt`  | DATETIME                 | Set automatically                       |
+| `updateAt`  | DATETIME                 | Set automatically                       |
 
 ### `blogs`
 
-| Column | Type | Notes |
-| --- | --- | --- |
-| `id` | INT | Primary key, auto increment |
-| `userId` | INT | **Foreign key →** `users.id` |
-| `blogTitle` | VARCHAR(255) | Required |
-| `blog` | TEXT | Required |
-| `category` | VARCHAR(255) | Required |
-| `createAt` | DATETIME | Set automatically |
-| `updateAt` | DATETIME | Set automatically |
+| Column        | Type         | Notes                                 |
+| ------------- | ------------ | ------------------------------------- |
+| `id`        | INT          | Primary key, auto increment           |
+| `userId`    | INT          | **Foreign key →** `users.id` |
+| `blogTitle` | VARCHAR(255) | Required                              |
+| `blog`      | TEXT         | Required                              |
+| `category`  | VARCHAR(255) | Required                              |
+| `createAt`  | DATETIME     | Set automatically                     |
+| `updateAt`  | DATETIME     | Set automatically                     |
 
 Relationship: a user **has many** blogs; a blog **belongs to** one user (exposed as `author`).
 
@@ -275,41 +276,41 @@ Validation failures add an `errors` array naming each offending field:
 
 ## Endpoints
 
-| # | Method | Endpoint | Access | Purpose |
-| --- | --- | --- | --- | --- |
-| 1 | `POST` | `/api/auth/register` | Public | Register a new user |
-| 2 | `POST` | `/api/auth/login` | Public | Log in and receive a token |
-| 3 | `GET` | `/api/users` | Admin | Get all users |
-| 4 | `GET` | `/api/users/:id` | Admin | Get a specific user |
-| 5 | `PATCH` | `/api/users/:id/status` | Admin | Activate / deactivate a user |
-| 6 | `GET` | `/api/users/profile` | User / Admin | Get own profile |
-| 7 | `PUT` | `/api/users/profile/update` | User / Admin | Update own profile |
-| 8 | `PATCH` | `/api/users/password` | User / Admin | Update own password |
-| 9 | `POST` | `/api/blogs/create` | User / Admin | Create a blog |
-| 10 | `GET` | `/api/blogs` | Public | List / search / filter blogs |
-| 11 | `GET` | `/api/blogs/:id` | Public | Get a specific blog |
-| 12 | `PUT` | `/api/blogs/update/:id` | User / Admin | Update a blog |
-| 13 | `DELETE` | `/api/blogs/delete/:id` | User / Admin | Delete a blog |
+| #  | Method     | Endpoint                      | Access       | Purpose                      |
+| -- | ---------- | ----------------------------- | ------------ | ---------------------------- |
+| 1  | `POST`   | `/api/auth/register`        | Public       | Register a new user          |
+| 2  | `POST`   | `/api/auth/login`           | Public       | Log in and receive a token   |
+| 3  | `GET`    | `/api/users`                | Admin        | Get all users                |
+| 4  | `GET`    | `/api/users/:id`            | Admin        | Get a specific user          |
+| 5  | `PATCH`  | `/api/users/:id/status`     | Admin        | Activate / deactivate a user |
+| 6  | `GET`    | `/api/users/profile`        | User / Admin | Get own profile              |
+| 7  | `PUT`    | `/api/users/profile/update` | User / Admin | Update own profile           |
+| 8  | `PATCH`  | `/api/users/password`       | User / Admin | Update own password          |
+| 9  | `POST`   | `/api/blogs/create`         | User / Admin | Create a blog                |
+| 10 | `GET`    | `/api/blogs`                | Public       | List / search / filter blogs |
+| 11 | `GET`    | `/api/blogs/:id`            | Public       | Get a specific blog          |
+| 12 | `PUT`    | `/api/blogs/update/:id`     | User / Admin | Update a blog                |
+| 13 | `DELETE` | `/api/blogs/delete/:id`     | User / Admin | Delete a blog                |
 
 `DELETE /api/blogs/:id` is also accepted and behaves identically to #13.
 
 ### Where each endpoint lives
 
-| Endpoint | Route file | Controller function |
-| --- | --- | --- |
-| `POST /api/auth/register` | `routes/auth.routes.js` | `controllers/auth.controller.js` → `register` |
-| `POST /api/auth/login` | `routes/auth.routes.js` | `controllers/auth.controller.js` → `login` |
-| `GET /api/users` | `routes/user.routes.js` | `controllers/user.controller.js` → `getAllUsers` |
-| `GET /api/users/:id` | `routes/user.routes.js` | `controllers/user.controller.js` → `getUserById` |
-| `PATCH /api/users/:id/status` | `routes/user.routes.js` | `controllers/user.controller.js` → `updateUserStatus` |
-| `GET /api/users/profile` | `routes/user.routes.js` | `controllers/user.controller.js` → `getProfile` |
-| `PUT /api/users/profile/update` | `routes/user.routes.js` | `controllers/user.controller.js` → `updateProfile` |
-| `PATCH /api/users/password` | `routes/user.routes.js` | `controllers/user.controller.js` → `updatePassword` |
-| `POST /api/blogs/create` | `routes/blog.routes.js` | `controllers/blog.controller.js` → `createBlog` |
-| `GET /api/blogs` | `routes/blog.routes.js` | `controllers/blog.controller.js` → `getAllBlogs` |
-| `GET /api/blogs/:id` | `routes/blog.routes.js` | `controllers/blog.controller.js` → `getBlogById` |
-| `PUT /api/blogs/update/:id` | `routes/blog.routes.js` | `controllers/blog.controller.js` → `updateBlog` |
-| `DELETE /api/blogs/delete/:id` | `routes/blog.routes.js` | `controllers/blog.controller.js` → `deleteBlog` |
+| Endpoint                          | Route file                | Controller function                                        |
+| --------------------------------- | ------------------------- | ---------------------------------------------------------- |
+| `POST /api/auth/register`       | `routes/auth.routes.js` | `controllers/auth.controller.js` → `register`         |
+| `POST /api/auth/login`          | `routes/auth.routes.js` | `controllers/auth.controller.js` → `login`            |
+| `GET /api/users`                | `routes/user.routes.js` | `controllers/user.controller.js` → `getAllUsers`      |
+| `GET /api/users/:id`            | `routes/user.routes.js` | `controllers/user.controller.js` → `getUserById`      |
+| `PATCH /api/users/:id/status`   | `routes/user.routes.js` | `controllers/user.controller.js` → `updateUserStatus` |
+| `GET /api/users/profile`        | `routes/user.routes.js` | `controllers/user.controller.js` → `getProfile`       |
+| `PUT /api/users/profile/update` | `routes/user.routes.js` | `controllers/user.controller.js` → `updateProfile`    |
+| `PATCH /api/users/password`     | `routes/user.routes.js` | `controllers/user.controller.js` → `updatePassword`   |
+| `POST /api/blogs/create`        | `routes/blog.routes.js` | `controllers/blog.controller.js` → `createBlog`       |
+| `GET /api/blogs`                | `routes/blog.routes.js` | `controllers/blog.controller.js` → `getAllBlogs`      |
+| `GET /api/blogs/:id`            | `routes/blog.routes.js` | `controllers/blog.controller.js` → `getBlogById`      |
+| `PUT /api/blogs/update/:id`     | `routes/blog.routes.js` | `controllers/blog.controller.js` → `updateBlog`       |
+| `DELETE /api/blogs/delete/:id`  | `routes/blog.routes.js` | `controllers/blog.controller.js` → `deleteBlog`       |
 
 All three route files are mounted onto `/api` by `routes/index.js`, which `app.js`
 attaches with `app.use('/api', routes)`.
@@ -429,25 +430,25 @@ Accepts any subset of `firstname`, `lastname`, `email`. Sending `role` or
 
 ## Authorization matrix
 
-| Action | Guest | User | Admin |
-| --- | :---: | :---: | :---: |
-| Register | ✅ | ✅ | ✅ |
-| Login | ✅ | ✅ | ✅ |
-| View all blogs | ✅ | ✅ | ✅ |
-| View blog by ID | ✅ | ✅ | ✅ |
-| Search blog by title | ✅ | ✅ | ✅ |
-| Filter blog by category | ✅ | ✅ | ✅ |
-| Create blog | ❌ | ✅ | ✅ |
-| Update own blog | ❌ | ✅ | ✅ |
-| Update another user's blog | ❌ | ❌ | ✅ |
-| Delete own blog | ❌ | ✅ | ✅ |
-| Delete another user's blog | ❌ | ❌ | ✅ |
-| View own profile | ❌ | ✅ | ✅ |
-| Update own profile | ❌ | ✅ | ✅ |
-| Update own password | ❌ | ✅ | ✅ |
-| View all users | ❌ | ❌ | ✅ |
-| View user by ID | ❌ | ❌ | ✅ |
-| Activate / deactivate users | ❌ | ❌ | ✅ |
+| Action                      | Guest | User | Admin |
+| --------------------------- | :---: | :--: | :---: |
+| Register                    |  ✅  |  ✅  |  ✅  |
+| Login                       |  ✅  |  ✅  |  ✅  |
+| View all blogs              |  ✅  |  ✅  |  ✅  |
+| View blog by ID             |  ✅  |  ✅  |  ✅  |
+| Search blog by title        |  ✅  |  ✅  |  ✅  |
+| Filter blog by category     |  ✅  |  ✅  |  ✅  |
+| Create blog                 |  ❌  |  ✅  |  ✅  |
+| Update own blog             |  ❌  |  ✅  |  ✅  |
+| Update another user's blog  |  ❌  |  ❌  |  ✅  |
+| Delete own blog             |  ❌  |  ✅  |  ✅  |
+| Delete another user's blog  |  ❌  |  ❌  |  ✅  |
+| View own profile            |  ❌  |  ✅  |  ✅  |
+| Update own profile          |  ❌  |  ✅  |  ✅  |
+| Update own password         |  ❌  |  ✅  |  ✅  |
+| View all users              |  ❌  |  ❌  |  ✅  |
+| View user by ID             |  ❌  |  ❌  |  ✅  |
+| Activate / deactivate users |  ❌  |  ❌  |  ✅  |
 
 ---
 
@@ -486,16 +487,16 @@ Accepts any subset of `firstname`, `lastname`, `email`. Sending `role` or
 
 ## HTTP status codes
 
-| Code | Used when |
-| --- | --- |
-| `200 OK` | Successful read, update or delete |
-| `201 Created` | Registration, blog creation |
-| `400 Bad Request` | Validation failed, invalid id, `userId` sent by the client |
-| `401 Unauthorized` | No / invalid / expired token, wrong credentials |
-| `403 Forbidden` | Wrong role, someone else's blog, deactivated account, protected field |
-| `404 Not Found` | User, blog or route does not exist |
-| `409 Conflict` | Email already registered |
-| `500 Internal Server Error` | Unexpected server fault |
+| Code                          | Used when                                                             |
+| ----------------------------- | --------------------------------------------------------------------- |
+| `200 OK`                    | Successful read, update or delete                                     |
+| `201 Created`               | Registration, blog creation                                           |
+| `400 Bad Request`           | Validation failed, invalid id,`userId` sent by the client           |
+| `401 Unauthorized`          | No / invalid / expired token, wrong credentials                       |
+| `403 Forbidden`             | Wrong role, someone else's blog, deactivated account, protected field |
+| `404 Not Found`             | User, blog or route does not exist                                    |
+| `409 Conflict`              | Email already registered                                              |
+| `500 Internal Server Error` | Unexpected server fault                                               |
 
 ---
 
@@ -533,18 +534,17 @@ npx newman run postman/Blog-API.postman_collection.json
 
 ## npm scripts
 
-| Script | What it does |
-| --- | --- |
-| `npm start` | Start the API |
-| `npm run dev` | Start with auto-restart on file changes |
-| `npm run db:setup` | Create the database, tables and align column names |
-| `npm run seed:admin` | Create or reset the admin account |
+| Script                 | What it does                                       |
+| ---------------------- | -------------------------------------------------- |
+| `npm start`          | Start the API                                      |
+| `npm run dev`        | Start with auto-restart on file changes            |
+| `npm run db:setup`   | Create the database, tables and align column names |
+| `npm run seed:admin` | Create or reset the admin account                  |
 
 ---
 
 ## Notes
 
 - Accounts created by the earlier CLI version of this project (Assignment 04)
-  stored plain-text passwords and cannot log in through this API. `npm run
-  seed:admin` lists any such accounts. Re-register them, or have an admin reset
+  stored plain-text passwords and cannot log in through this API. `npm run seed:admin` lists any such accounts. Re-register them, or have an admin reset
   them, to make them usable.
