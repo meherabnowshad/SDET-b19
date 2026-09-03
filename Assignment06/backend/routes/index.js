@@ -11,7 +11,8 @@ router.get('/', (req, res) => {
         message: 'Blog Management API is running.',
         endpoints: {
             auth: [
-                'POST /api/auth/register',
+                'POST /api/auth/register/send-otp',
+                'POST /api/auth/register (requires otp)',
                 'POST /api/auth/login',
                 'POST /api/auth/forgot-password',
                 'PATCH /api/auth/reset-password/:token',

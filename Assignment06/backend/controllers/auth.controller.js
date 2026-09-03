@@ -1,16 +1,84 @@
-import { User } from '../models/index.js';
+import crypto from 'crypto';
+import bcrypt from 'bcryptjs';
+import { Otp, User } from '../models/index.js';
 import env from '../config/env.js';
 import ApiError from '../utils/apiError.js';
 import asyncHandler from '../utils/asyncHandler.js';
+import { isMailConfigured, sendOtpEmail } from '../utils/email.js';
 import { signResetToken, signToken, verifyResetToken } from '../utils/token.js';
 
-export const register = asyncHandler(async (req, res) => {
-    const { firstname, lastname, email, password } = req.body;
+const OTP_TTL_MINUTES = 10;
+const OTP_MAX_ATTEMPTS = 5;
+
+function makeOtp() {
+    return String(crypto.randomInt(0, 1000000)).padStart(6, '0');
+}
+
+export const sendRegisterOtp = asyncHandler(async (req, res) => {
+    const { email } = req.body;
 
     const existing = await User.findOne({ where: { email } });
     if (existing) {
         throw ApiError.conflict('This email is already registered.');
     }
+
+    const otp = makeOtp();
+    await Otp.upsert({
+        email,
+        otpHash: await bcrypt.hash(otp, 10),
+        expiresAt: new Date(Date.now() + OTP_TTL_MINUTES * 60 * 1000),
+        attempts: 0,
+    });
+
+    if (isMailConfigured()) {
+        try {
+            await sendOtpEmail(email, otp);
+        } catch (err) {
+            console.error('[auth] failed to send OTP email:', err.message);
+            throw ApiError.badRequest('Could not send the verification email. Please try again.');
+        }
+        return res.status(200).json({
+            success: true,
+            message: `A 6-digit verification code was sent to ${email}. It expires in 10 minutes.`,
+        });
+    }
+
+    // Dev mode (no Gmail configured): log the code and return it so the
+    // flow stays testable end to end without a mailer.
+    console.log(`[auth] REGISTER OTP for ${email}: ${otp}`);
+    res.status(200).json({
+        success: true,
+        message: `A 6-digit verification code was sent to ${email}. It expires in 10 minutes.`,
+        data: { devOtp: otp, mailConfigured: false },
+    });
+});
+
+export const register = asyncHandler(async (req, res) => {
+    const { firstname, lastname, email, password, otp } = req.body;
+
+    const existing = await User.findOne({ where: { email } });
+    if (existing) {
+        throw ApiError.conflict('This email is already registered.');
+    }
+
+    const record = await Otp.findOne({ where: { email } });
+    if (!record) {
+        throw ApiError.badRequest('No verification code was requested for this email. Please request one first.');
+    }
+    if (record.expiresAt.getTime() < Date.now()) {
+        await record.destroy();
+        throw ApiError.badRequest('Verification code has expired. Please request a new one.');
+    }
+    if (record.attempts >= OTP_MAX_ATTEMPTS) {
+        await record.destroy();
+        throw ApiError.badRequest('Too many wrong attempts. Please request a new verification code.');
+    }
+    if (!(await bcrypt.compare(String(otp), record.otpHash))) {
+        await record.increment('attempts');
+        throw ApiError.badRequest('Incorrect verification code. Please try again.');
+    }
+
+    await record.destroy();
 
     const user = await User.create({
         firstname,

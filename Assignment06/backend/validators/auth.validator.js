@@ -2,7 +2,21 @@ import { body, param } from 'express-validator';
 
 const PASSWORD_MIN_LENGTH = 6;
 
-export const registerRules = [
+const otpRule = body('otp')
+    .exists({ values: 'falsy' })
+    .withMessage('Verification code is required.')
+    .bail()
+    .isString()
+    .withMessage('Verification code must be 6 digits.')
+    .bail()
+    .trim()
+    .isLength({ min: 6, max: 6 })
+    .withMessage('Verification code must be 6 digits.')
+    .bail()
+    .matches(/^\d{6}$/)
+    .withMessage('Verification code must be 6 digits.');
+
+const baseRegisterRules = [
     body('firstname')
         .exists({ values: 'falsy' })
         .withMessage('firstname is required.')
@@ -56,9 +70,15 @@ export const loginRules = [
         .withMessage('password is required.')
         .bail()
         .isString()
-        .notEmpty()
-        .withMessage('password cannot be empty.'),
+        .isLength({ min: PASSWORD_MIN_LENGTH })
+        .withMessage(`password must be at least ${PASSWORD_MIN_LENGTH} characters long.`),
 ];
+
+// Step 1 (request OTP) and Step 2 (verify + create account) share the same
+// account payload; Step 2 additionally requires the 6-digit code.
+export const sendRegisterOtpRules = [...baseRegisterRules];
+
+export const registerRules = [...baseRegisterRules, otpRule];
 
 export const forgotPasswordRules = [
     body('email')
