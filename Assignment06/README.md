@@ -90,6 +90,11 @@ JWT_SECRET=any_long_random_string
 JWT_EXPIRES_IN=1d
 JWT_RESET_EXPIRES_IN=1h
 FRONTEND_URL=http://localhost:3000
+
+# Registration OTP emails (Gmail app password). Empty = dev mode
+# (OTP logged to console + returned in the send-otp response).
+GMAIL=you@gmail.com
+GMAIL_APP_PASSWORD=xxxx_xxxx_xxxx_xxxx
 ADMIN_FIRSTNAME=Admin
 ADMIN_LASTNAME=One
 ADMIN_EMAIL=admin@example.com
@@ -127,6 +132,8 @@ New endpoints added for this assignment (see `backend/README-backend.md` § Addi
 
 | Method | Endpoint | Purpose |
 | ------ | -------- | ------- |
+| `POST` | `/api/auth/register/send-otp` | Email a 6-digit registration code (`{ firstname, lastname, email, password }`) |
+| `POST` | `/api/auth/register` | Verify code + create account (`{ ..., otp }`) |
 | `POST` | `/api/auth/forgot-password` | Request reset link (`{ email }`) |
 | `PATCH` | `/api/auth/reset-password/:token` | Set new password (`{ password }`) |
 | `PATCH` | `/api/users/profile/image` | Avatar upload (`multipart/form-data`, field `image`, ≤ 2 MB) |
@@ -155,7 +162,7 @@ Plus: `users.profileImage` column, static `/uploads` serving, and
 | Flow | Steps |
 | ---- | ----- |
 | Reader journey | Browse → search `playwright` → filter `Testing` → open blog |
-| Member journey | Register → login → dashboard → upload avatar → create → edit → delete → update profile → change password → logout |
+| Member journey | Register (form → email OTP → verify) → login → dashboard → upload avatar → create → edit → delete → update profile → change password → logout |
 | Recovery journey | Login → Forgot Password → email → reset link → new password → login |
 | Admin journey | Login → dashboard → Users → view user → deactivate → manage all blogs |
 

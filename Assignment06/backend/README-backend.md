@@ -15,6 +15,12 @@
 > - Blog `author` objects now include `profileImage`.
 > - New env: `JWT_RESET_EXPIRES_IN` (default `1h`), `FRONTEND_URL` (default
 >   `http://localhost:3000`, used to build the reset link). New dep: `multer`.
+> - Registration is OTP-gated: `POST /api/auth/register/send-otp`
+>   (`{ firstname, lastname, email, password }`, 409 if taken) emails a 6-digit
+>   code (Gmail SMTP via `GMAIL` + `GMAIL_APP_PASSWORD`, 10-min expiry);
+>   `POST /api/auth/register` now requires `{ ..., otp }` (bcrypt-hashed in the
+>   `otps` table, 5 wrong attempts burns the code). Without Gmail configured the
+>   API runs in dev mode: the OTP is logged and returned as `data.devOtp`.
 > - Full endpoint list: `GET /api`.
 
 A REST API for a blog application with three access levels — **Admin**, **User** and **Guest** — covering authentication, user management, blog CRUD, role-based authorization, validation and public blog search.

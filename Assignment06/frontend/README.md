@@ -20,7 +20,7 @@ The backend must be running (`Assignment06/backend`, default `http://localhost:5
 app/
 ├── page.jsx                        # / — hero, SearchBar, CategoryFilter, BlogCards
 ├── blogs/[id]/page.jsx             # /blogs/:id — details / Blog Not Found
-├── login/ register/                # auth forms with validation
+├── login/ register/                # auth forms with validation (register is 2-step: form → OTP)
 ├── forgot-password/                # POST /auth/forgot-password
 ├── reset-password/[token]/         # PATCH /auth/reset-password/:token
 ├── dashboard/
