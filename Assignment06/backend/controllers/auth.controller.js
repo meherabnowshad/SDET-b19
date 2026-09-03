@@ -7,7 +7,7 @@ import asyncHandler from '../utils/asyncHandler.js';
 import { isMailConfigured, sendOtpEmail } from '../utils/email.js';
 import { signResetToken, signToken, verifyResetToken } from '../utils/token.js';
 
-const OTP_TTL_MINUTES = 10;
+const OTP_TTL_MINUTES = 2;
 const OTP_MAX_ATTEMPTS = 5;
 
 function makeOtp() {
