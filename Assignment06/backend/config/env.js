@@ -17,6 +17,10 @@ const env = {
         resetExpiresIn: process.env.JWT_RESET_EXPIRES_IN || '1h',
     },
     frontendUrl: process.env.FRONTEND_URL || 'http://localhost:3000',
+    mail: {
+        user: process.env.GMAIL || '',
+        appPassword: process.env.GMAIL_APP_PASSWORD || '',
+    },
     admin: {
         firstname: process.env.ADMIN_FIRSTNAME || 'Admin',
         lastname: process.env.ADMIN_LASTNAME || 'One',

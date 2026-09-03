@@ -1,6 +1,7 @@
 import sequelize from '../config/database.js';
 import User from './user.model.js';
 import Blog from './blog.model.js';
+import Otp from './otp.model.js';
 
 User.hasMany(Blog, { foreignKey: 'userId', as: 'blogs', onDelete: 'CASCADE' });
 Blog.belongsTo(User, { foreignKey: 'userId', as: 'author' });
@@ -50,4 +51,4 @@ export async function closeDB() {
     await sequelize.close();
 }
 
-export { sequelize, User, Blog };
+export { sequelize, User, Blog, Otp };
