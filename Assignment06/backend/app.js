@@ -1,6 +1,8 @@
 import express from 'express';
 import cors from 'cors';
 import morgan from 'morgan';
+import swaggerUi from 'swagger-ui-express';
+import swaggerSpec from './docs/swagger.js';
 import routes from './routes/index.js';
 import { errorHandler, notFoundHandler } from './middlewares/error.middleware.js';
 import { uploadsDir } from './middlewares/upload.middleware.js';
@@ -23,6 +25,12 @@ app.get('/', (req, res) => {
 });
 
 app.use('/api', routes);
+
+// Swagger docs
+app.get('/api-docs.json', (req, res) => res.json(swaggerSpec));
+app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerSpec));
+// Convenience: /swagger -> /api-docs (common guess)
+app.get('/swagger', (req, res) => res.redirect('/api-docs'));
 
 app.use(notFoundHandler);
 app.use(errorHandler);
