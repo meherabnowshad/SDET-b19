@@ -1,0 +1,25 @@
+{
+  "name": "dmoney-integration-tests",
+  "version": "1.0.0",
+  "description": "Integration tests for dMoney application",
+  "main": "dmoney.spec.js",
+  "scripts": {
+    "test": "mocha dmoney.spec.js --timeout 10000",
+    "test:watch": "mocha dmoney.spec.js --watch --timeout 10000"
+  },
+  "keywords": [
+    "integration",
+    "testing",
+    "mocha",
+    "chai"
+  ],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "axios": "^1.12.2"
+  },
+  "devDependencies": {
+    "mocha": "^10.0.0",
+    "chai": "^4.3.0"
+  }
+}

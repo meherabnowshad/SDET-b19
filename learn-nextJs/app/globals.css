@@ -1,0 +1,58 @@
+* { box-sizing: border-box; }
+
+body {
+  margin: 0;
+  font-family: -apple-system, "Segoe UI", Arial, sans-serif;
+  color: #1a1a1a;
+}
+
+.container { max-width: 720px; margin: 0 auto; padding: 24px; }
+
+a { color: #1d4ed8; }
+
+.back-link { display: inline-block; margin-bottom: 10px; font-size: 14px; text-decoration: none; }
+
+h1 { font-size: 1.4rem; margin: 0 0 6px; }
+p.description { color: #555; font-size: 14px; margin: 0 0 16px; }
+
+.demo { border: 1px solid #ddd; border-radius: 6px; padding: 16px; margin: 12px 0; }
+
+button {
+  background: #1d4ed8;
+  color: #fff;
+  border: none;
+  padding: 6px 12px;
+  border-radius: 4px;
+  cursor: pointer;
+  margin: 4px 6px 4px 0;
+  font-size: 14px;
+}
+
+input, select {
+  display: block;
+  width: 100%;
+  max-width: 280px;
+  padding: 6px 8px;
+  margin: 6px 0;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  font-size: 14px;
+}
+
+label { font-size: 13px; font-weight: 600; display: block; margin-top: 6px; }
+
+.badge {
+  display: inline-block;
+  background: #eef2ff;
+  color: #1d4ed8;
+  padding: 2px 8px;
+  border-radius: 999px;
+  font-size: 13px;
+  margin-right: 6px;
+}
+
+.note { font-size: 13px; color: #666; }
+
+nav.home-nav ul { list-style: none; padding: 0; margin: 0; }
+nav.home-nav li { margin: 6px 0; }
+nav.home-nav h2 { font-size: 1.05rem; margin: 20px 0 6px; }

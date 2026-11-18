@@ -1,0 +1,24 @@
+Test Case ID,Test Case Title,Expected Result
+TC-F1-01,Verify 1% service charge is deducted on a merchant payment of 1000 TK,Service charge = 10 TK deducted; no cashback awarded (amount is below the 5000 TK cashback threshold)
+TC-F1-02,Verify minimum 5 TK service charge applies when 1% of payment is less than 5 TK (payment = 200 TK),Service charge = 5 TK (flat minimum applied instead of the computed 2 TK); no cashback awarded
+TC-F1-03,Verify no cashback is awarded at the exact 5000 TK boundary,Service charge = 50 TK; cashback = 0 TK (5000 TK does not satisfy "more than 5000")
+TC-F1-04,Verify 10% cashback is awarded just above the 5000 TK threshold (payment = 5001 TK),Cashback = 500.10 TK (10% of 5001 TK)
+TC-F1-05,Verify a payment of exactly 10000 TK still receives the 10% tier and not the 20% tier,Cashback = 1000 TK (10% of 10000 TK), not 2000 TK
+TC-F1-06,Verify 20% cashback is awarded just above the 10000 TK threshold (payment = 10001 TK),Cashback = 2000.20 TK (20% of 10001 TK)
+TC-F1-07,Verify cashback is capped at 3000 TK when the 20% computation exceeds the cap (payment = 20000 TK),Computed 20% = 4000 TK, but credited cashback is capped at 3000 TK
+TC-F1-08,Verify cashback equals exactly the 3000 TK cap at its boundary amount (payment = 15000 TK),Cashback = 3000 TK (20% of 15000 TK = 3000, exactly at the cap)
+TC-F1-09,Verify a utility bill payment of 8000 TK receives no cashback even though the amount exceeds the merchant 5000 TK threshold,No cashback credited; payment processed for the bill amount only
+TC-F1-10,Verify a large utility bill payment of 50000 TK receives no cashback,No cashback credited regardless of the high payment amount
+TC-F1-11,Verify a merchant payment is rejected when balance is insufficient to cover amount plus service charge,Transaction rejected with an insufficient-balance error; no charge or cashback applied
+TC-F2-01,Verify a user with balance below 100 TK can apply for a loan within the 20000 TK limit (balance = 50 TK, loan = 15000 TK),Loan application approved; loan of 15000 TK created against the user's account
+TC-F2-02,Verify loan application is rejected when balance is exactly 100 TK,Application rejected — eligibility requires balance strictly below 100 TK
+TC-F2-03,Verify loan application is rejected for a user with balance of 500 TK,Application rejected due to balance not being below 100 TK
+TC-F2-04,Verify loan application is rejected when requested amount exceeds 20000 TK (request = 25000 TK),Application rejected; requested amount exceeds the maximum loan limit
+TC-F2-05,Verify loan application is accepted at exactly the 20000 TK maximum limit,Loan of 20000 TK approved
+TC-F2-06,Verify no interest is charged when the loan is fully repaid within 30 days (repaid on day 20),Total repaid = original loan amount only; 0 TK interest applied
+TC-F2-07,Verify no interest is charged when loan is repaid exactly on day 30 from initiation,0 TK interest applied (day 30 falls within the interest-free window)
+TC-F2-08,Verify 1.8% daily compound interest begins accruing on remaining unpaid balance the day after the 30-day window (day 31),Interest on day 31 = 1.8% of the remaining unpaid principal; balance increases accordingly
+TC-F2-09,Verify daily compound interest correctly compounds over multiple days past day 30 (checked on day 35),Interest on day 35 = remaining_balance * (1.018^5) - remaining_balance, i.e. compounding daily, not simple interest
+TC-F2-10,Verify user becomes eligible for a new loan after repaying exactly 50% of the outstanding loan amount,Second loan application succeeds once repayment reaches 50% of the outstanding amount
+TC-F2-11,Verify user cannot apply for a new loan after repaying only 40% of the outstanding loan,Second loan application rejected — repayment is below the 50% eligibility threshold
+TC-F2-12,Verify a user with an active, fully unpaid loan (0% repaid) cannot apply for a second loan,Application rejected due to insufficient repayment on the existing loan

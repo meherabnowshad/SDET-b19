@@ -1,0 +1,30 @@
+[
+  {
+    "name": "John Doe",
+    "age": "20"
+  },
+  {
+    "name": "Jane Smith",
+    "age": "22"
+  },
+  {
+    "name": "Rahim",
+    "id": 101,
+    "department": "CSE"
+  },
+  {
+    "name": "Rahim",
+    "id": 101,
+    "department": "CSE"
+  },
+  {
+    "name": "Karim",
+    "id": 104,
+    "department": "CSE"
+  },
+  {
+    "name": "Karim",
+    "id": 104,
+    "department": "CSE"
+  }
+]
